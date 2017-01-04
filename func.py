@@ -3,7 +3,7 @@ import time
 
 def compare_time(l_time):
     start_t = '20160101'
-    end_t = '20161011'
+    end_t = '20170101'
     s_time = time.mktime(time.strptime(start_t, '%Y%m%d'))  # get the seconds for specify date
 
     e_time = time.mktime(time.strptime(end_t, '%Y%m%d'))

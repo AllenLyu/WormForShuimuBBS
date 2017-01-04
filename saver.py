@@ -18,23 +18,25 @@ def main():
     csv_file = open("tinsghua.csv", "r")
     reader = csv.reader(csv_file, delimiter=',')
     i = 0
-    while i < 5:
+    while i < 1585:
         i += 1
         line = reader.next()
-        detail_file.write(line[0]+'\n')
-        detail_file.write(TOPIC_LINE + '\n')
+        detail_file.write('#'+i.__str__()+'.'+line[0]+'\n')
 
         get_topic(URL_PREFIX + line[1] + URL_SUFFIX)
-        print 1
+        print i
 
-        detail_file.write('\n\n\n\n\n')
+        detail_file.write('\n\n\n---\n\n')
 
 
 def get_topic(url):
     page = 1
     response = requests.get(url.format(page=page))
     html = BeautifulSoup(response.text, 'html5lib')
-    page_count = html.select('.t-pre ')[0].select('.page-main li')
+    try:
+        page_count = html.select('.t-pre')[0].select('.page-main li')
+    except:
+        return
     if len(page_count) > 1:
         page_count = len(page_count) - 1
     else:
@@ -45,9 +47,10 @@ def get_topic(url):
 
     line = re.sub('(.*, 站内)', '', line)
     line = re.sub('(--    ※ 来源.*)', '', line)
-    detail_file.write(line)
+    detail_file.write('##主题\n')
+    detail_file.write('>-'+line)
 
-    detail_file.write(TOPIC_LINE + '\n')
+    detail_file.write('##回复\n')
 
     del (art_list[0])
     for art in art_list:
@@ -55,9 +58,8 @@ def get_topic(url):
 
         line = re.sub('(.*, 站内)', '', line)
         line = re.sub('(--    ※ 来源.*)', '', line)
-        detail_file.write(line)
+        detail_file.write('>-'+line)
 
-        detail_file.write(REPOST_LINE + '\n')
     get_post(url, page_count)
 
 
@@ -76,9 +78,7 @@ def get_post(url, page):
 
                 line = re.sub('(.*, 站内)', '', line)
                 line = re.sub('(--    ※ 来源.*)', '', line)
-                detail_file.write(line)
-
-                detail_file.write(REPOST_LINE + '\n')
+                detail_file.write('>-' + line)
 
 
 main()
